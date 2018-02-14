@@ -29,5 +29,4 @@ public class Bank {
 	public int deposit(Account acc, int val) {
 		return acc.deposit(val);
 	}
-	
 }
