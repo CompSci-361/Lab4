@@ -23,4 +23,11 @@ public class Bank {
 		}
 		return ret;
 	}
+	public int withdraw(Account acc, int val) {
+		return acc.withdraw(val);
+	}
+	public int deposit(Account acc, int val) {
+		return acc.deposit(val);
+	}
+	
 }
