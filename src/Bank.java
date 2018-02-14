@@ -13,6 +13,9 @@ public class Bank {
 	public void addAccount(Account acc) {
 		accounts.add(acc);
 	}
+	public Account getAccount(int loc) {
+		return accounts.get(loc);
+	}
 	//return -1 if not a valid account, if valid, it will return the position of the account in accounts
 	//So that it can be accessed later.
 	public int validate(Account acc) {
