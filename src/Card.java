@@ -6,7 +6,7 @@ public class Card {
 		this.accountNumber = accountNumber;
 	}
 	
-	public int getAccountNumber(Card card){
+	public int getAccountNumber(){
 		return this.accountNumber;
 	}
 }
