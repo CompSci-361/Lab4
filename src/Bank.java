@@ -13,6 +13,7 @@ public class Bank {
 	public void addAccount(Account acc) {
 		accounts.add(acc);
 	}
+
 	public Account getAccount(Card card){
 		for (Account acc: accounts){
 			if (acc.getAccountNumber() == card.getAccountNumber()) return acc;
