@@ -9,6 +9,7 @@ public class Bank {
 	public Bank(Account acc) {
 		accounts.add(acc);
 	}
+	//Add accounts to the bank
 	public void addAccount(Account acc) {
 		accounts.add(acc);
 	}
@@ -23,9 +24,13 @@ public class Bank {
 		}
 		return ret;
 	}
+	//Will return -1 if there is not enough money, and will print an error message
+	//Returns accounts deposit
+	//Atm must first call validate on the account.
 	public int withdraw(Account acc, int val) {
 		return acc.withdraw(val);
 	}
+	//Returns accounts deposit
 	public int deposit(Account acc, int val) {
 		return acc.deposit(val);
 	}
