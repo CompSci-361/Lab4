@@ -8,6 +8,8 @@ public class Account {
 		PINcode = pin;
 		balance = bal;
 	}
+	
+	
 	public int getAccountNumber() {
 		return accountNumber;
 	}
@@ -30,8 +32,16 @@ public class Account {
 		}
 		return balance-=val;
 	}
+	
+	public boolean validate(int pin){
+		return pin == PINcode;
+	}
+	
 	//Account comp is a valid input if it matches the accountNumber and the PINcode of this account.
-	public boolean validate(Account comp) {
+	@Override
+	public boolean equals(Object obj) {
+		if(!(obj instanceof Account)) return false;
+		Account comp = (Account)obj;
 		return comp.getAccountNumber()==this.accountNumber&&comp.getAccountPIN()==this.PINcode;
 	}
 }
