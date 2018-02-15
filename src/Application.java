@@ -78,6 +78,7 @@ public class Application {
 	    			session.end();
 	    			System.out.println("Transaction complete!");
 	    			System.out.println();
+	    			input.close();
 	    		}
 	    		
     		} catch (Throwable ex) {
