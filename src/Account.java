@@ -8,8 +8,6 @@ public class Account {
 		PINcode = pin;
 		balance = bal;
 	}
-	
-	
 	public int getAccountNumber() {
 		return accountNumber;
 	}
@@ -25,6 +23,7 @@ public class Account {
 	}
 	//Take money from account
 	public int withdraw(int val) {
+		
 		//If there is not enough money, print an error and don't actually change the account money
 		if(balance-val<0) {
 			System.out.print("Cannot withdraw "+val+" from account.");
