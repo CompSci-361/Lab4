@@ -66,7 +66,7 @@ public class Application {
 			    			}
 		    				break;
 		    			case "b": {
-		    				System.out.println("Your Balance: $" + session.getBalance())
+		    				System.out.println("Your Balance: $" + session.getBalance());
 		    				break;
 			    			}
 		    			default:
