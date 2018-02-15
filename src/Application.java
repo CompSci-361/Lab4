@@ -43,7 +43,7 @@ public class Application {
 			    					continue;
 			    				}
 			    				
-			    				System.out.println("New Balance: " + session.deposit(amount));
+			    				System.out.println("New Balance: $" + session.deposit(amount));
 			    				done = true;
 			    				break;
 			    			}
@@ -57,7 +57,7 @@ public class Application {
 			    				
 			    				int newAmount = session.withdraw(amount);
 			    				if (newAmount != -1) {
-			    					System.out.println("New Balance: " + newAmount);
+			    					System.out.println("New Balance: $" + newAmount);
 				    				done = true;
 			    					break;
 			    				} else {
@@ -66,7 +66,7 @@ public class Application {
 			    			}
 		    				break;
 		    			case "b": {
-		    				//System.out.println("Your Balance: $" + session.getBalance())
+		    				System.out.println("Your Balance: $" + session.getBalance())
 		    				break;
 			    			}
 		    			default:
