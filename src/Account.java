@@ -26,7 +26,7 @@ public class Account {
 		
 		//If there is not enough money, print an error and don't actually change the account money
 		if(balance-val<0) {
-			System.out.print("Cannot withdraw "+val+" from account.");
+			System.out.println("Cannot withdraw "+val+" from account.");
 			return -1;
 		}
 		return balance-=val;
@@ -41,6 +41,6 @@ public class Account {
 	public boolean equals(Object obj) {
 		if(!(obj instanceof Account)) return false;
 		Account comp = (Account)obj;
-		return comp.getAccountNumber()==this.accountNumber&&comp.getAccountPIN()==this.PINcode;
+		return comp.getAccountNumber() == this.accountNumber && comp.getAccountPIN() == this.PINcode;
 	}
 }

@@ -1,12 +1,19 @@
+import java.util.ArrayList;
+
 
 public class ATM {
-	private  Bank bank;
+	private Bank bank;
 	
 	public ATM(){
 		bank = new Bank();
 	}
 	
-	public BankingSession start(Card card){
+	public ATM(ArrayList<Account> startingAccounts) {
+		bank = new Bank(startingAccounts);
+	}
+	
+	
+	public BankingSession start(Card card) throws Throwable{
 		//start is called when the user first walks up to the ATM and the session begins
 		
 		//validation below should be moved to banking session.
@@ -19,14 +26,17 @@ public class ATM {
 		return session;	
 	}
 	
-	
 	public class BankingSession {
 		private boolean isAuthenticated = false;
 		private Card enteredCard = null;
 		private Account enteredAccount = null;
-		private BankingSession(Card card) {
+		BankingSession(Card card) throws Exception {
 			enteredCard = card;
 			isAuthenticated = false;
+			
+			if (bank.getAccount(enteredCard) == null) {
+				throw new Exception("Account not found");
+			}
 		}
 		
 		public boolean getIsAuthenticated() {
@@ -44,15 +54,19 @@ public class ATM {
 		}
 		
 		public boolean tryAuthenticate(int pinCode) {
+			if (isAuthenticated) return true;
+			
 			Account temp = bank.getAccount(enteredCard);
 			isAuthenticated = bank.validate(temp, pinCode);
 			if(isAuthenticated) 
 				enteredAccount = temp;
 			return isAuthenticated;
-			//todo validate enteredCard with account's pin code
-			//set isAuthenticated and then return that variable
 		}
-		
-		
+
+		public void end() {
+			isAuthenticated = false;
+			enteredCard = null;
+			enteredAccount = null;
+		}		
 	}
 }

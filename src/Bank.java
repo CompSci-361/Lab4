@@ -5,9 +5,8 @@ public class Bank {
 	public Bank() {
 		accounts = new ArrayList<Account>();
 	}
-	public Bank(Account acc) {
-		accounts = new ArrayList<Account>();
-		accounts.add(acc);
+	public Bank(ArrayList<Account> accs) {
+		accounts = accs;
 	}
 	//Add accounts to the bank
 	public void addAccount(Account acc) {
@@ -23,7 +22,7 @@ public class Bank {
 	
 	public boolean validate(Account acc, int pin) {
 		if(acc == null) throw new NullPointerException("Account should not be null");
-		if(accounts.contains(acc)) return false;
+		if(!accounts.contains(acc)) return false;
 		return acc.validate(pin);
 	}
 	
