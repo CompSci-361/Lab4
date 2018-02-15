@@ -43,12 +43,12 @@ public class ATM {
 			return isAuthenticated;
 		}
 		
-		public int withdraw(int val){
+		public int withdraw(int val) {
 			if(!(getIsAuthenticated())) return -1;
 			return enteredAccount.withdraw(val);
 		}
 		
-		public int deposit(int val){
+		public int deposit(int val) {
 			if(!(getIsAuthenticated())) return -1;
 			return enteredAccount.deposit(val);
 		}
@@ -61,6 +61,11 @@ public class ATM {
 			if(isAuthenticated) 
 				enteredAccount = temp;
 			return isAuthenticated;
+		}
+		
+		public int getBalance() {
+			if(!(getIsAuthenticated())) return -1;
+			return enteredAccount.getBalance();
 		}
 
 		public void end() {
