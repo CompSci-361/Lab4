@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class ATM {
 	private Bank bank;
 	private CardReader cardReader;
+	private BankingSession currentSession = null;
 	
 	public ATM(){
 		bank = new Bank();
@@ -15,8 +16,27 @@ public class ATM {
 		cardReader = new CardReader();
 	}
 	
+	public CardReader getCardReader() {
+		return cardReader;
+	}
 	
-	public BankingSession start(CardReader card) throws Throwable{
+	private BankingSession onCardInserted(Card insertedCard) throws Throwable {
+		//this is fired by the card reader when the card is inserted.
+		currentSession = start(insertedCard);
+		return currentSession;
+	}
+	
+	private void onCardEjected(Card ejectedCard) {
+		//this is fired by the card reader when the card is ejected.
+		if (currentSession != null) {
+			if (currentSession.enteredCard == ejectedCard) {
+				currentSession.end();
+				//let the user know that the session as ended.
+			}
+		}
+	}
+	
+	private BankingSession start(Card card) throws Throwable{
 		//start is called when the user first walks up to the ATM and the session begins
 		
 		//validation below should be moved to banking session.
@@ -31,9 +51,9 @@ public class ATM {
 	
 	public class BankingSession {
 		private boolean isAuthenticated = false;
-		private CardReader enteredCard = null;
+		private Card enteredCard = null;
 		private Account enteredAccount = null;
-		BankingSession(CardReader card) throws Exception {
+		BankingSession(Card card) throws Exception {
 			enteredCard = card;
 			isAuthenticated = false;
 			
@@ -77,4 +97,36 @@ public class ATM {
 			enteredAccount = null;
 		}		
 	}
+	
+	public class CardReader {
+		private Card enteredCard = null;
+		public CardReader(){
+		}
+		
+		public int getAccountNumber(){
+			return enteredCard != null ? enteredCard.getAccountNumber() : -1;
+		}
+		
+		public boolean isCardInserted() {
+			return enteredCard != null;
+		}
+		
+		public BankingSession insertCard(Card card) throws Throwable {
+			if (isCardInserted()) throw new Exception("There is already a card in the card reader.");
+			if (card == null) throw new Exception("Invalid card: null");
+			
+			//validate card here
+			
+			enteredCard = card;
+			return ATM.this.onCardInserted(card);
+		}
+		
+		public void ejectCard() {
+			if (isCardInserted()) {
+				ATM.this.onCardEjected(enteredCard);
+				enteredCard = null;
+			}
+		}
+	}
+	
 }

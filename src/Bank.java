@@ -13,7 +13,7 @@ public class Bank {
 		accounts.add(acc);
 	}
 
-	public Account getAccount(CardReader card){
+	public Account getAccount(Card card){
 		for (Account acc: accounts){
 			if (acc.getAccountNumber() == card.getAccountNumber()) return acc;
 		}
