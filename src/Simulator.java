@@ -42,7 +42,7 @@ public class Simulator {
                     switch(cmd) {
                     	case "CARDREAD":{
                     		Card card = new Card(Integer.parseInt(param));
-                    		session = (ATM.BankingSession) atm.start(card);
+                    		session = (ATM.BankingSession) atm.getCardReader().insertCard(card);
                     		prevCMD='r';
                     	}
                     	case "NUM":{
@@ -119,7 +119,7 @@ public class Simulator {
 	    		Card card = new Card(cardNum);
 	    		
 	    		try {
-		    		ATM.BankingSession session = (ATM.BankingSession) atm.start(card);    		
+		    		ATM.BankingSession session = (ATM.BankingSession) atm.getCardReader().insertCard(card);    		
 		    		while(!session.getIsAuthenticated()) {
 		        		System.out.print("Enter your pin (4 digits): ");
 		        		int pin = input.nextInt();
