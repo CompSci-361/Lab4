@@ -17,19 +17,8 @@ public class Account {
 	public int getBalance() {
 		return balance;
 	}
-	public int deposit(int val) {
-		//adding money is always allowed
-		return balance+=val;
-	}
-	//Take money from account
-	public int withdraw(int val) {
-		
-		//If there is not enough money, print an error and don't actually change the account money
-		if(balance-val<0) {
-			System.out.println("Cannot withdraw "+val+" from account.");
-			return -1;
-		}
-		return balance-=val;
+	public void setBalance(int balance){
+		this.balance = balance;
 	}
 	
 	public boolean validate(int pin){

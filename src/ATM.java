@@ -13,7 +13,7 @@ public class ATM {
 	}
 	
 	
-	public BankingSession start(Card card) throws Throwable{
+	public BankingSession start(CardReader card) throws Throwable{
 		//start is called when the user first walks up to the ATM and the session begins
 		
 		//validation below should be moved to banking session.
@@ -28,9 +28,9 @@ public class ATM {
 	
 	public class BankingSession {
 		private boolean isAuthenticated = false;
-		private Card enteredCard = null;
+		private CardReader enteredCard = null;
 		private Account enteredAccount = null;
-		BankingSession(Card card) throws Exception {
+		BankingSession(CardReader card) throws Exception {
 			enteredCard = card;
 			isAuthenticated = false;
 			
@@ -45,12 +45,12 @@ public class ATM {
 		
 		public int withdraw(int val) {
 			if(!(getIsAuthenticated())) return -1;
-			return enteredAccount.withdraw(val);
+			return bank.withdraw(enteredAccount, val);
 		}
 		
 		public int deposit(int val) {
 			if(!(getIsAuthenticated())) return -1;
-			return enteredAccount.deposit(val);
+			return bank.deposit(enteredAccount, val);
 		}
 		
 		public boolean tryAuthenticate(int pinCode) {
@@ -65,7 +65,7 @@ public class ATM {
 		
 		public int getBalance() {
 			if(!(getIsAuthenticated())) return -1;
-			return enteredAccount.getBalance();
+			return bank.checkBalance(enteredAccount);
 		}
 
 		public void end() {

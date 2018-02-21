@@ -13,7 +13,7 @@ public class Bank {
 		accounts.add(acc);
 	}
 
-	public Account getAccount(Card card){
+	public Account getAccount(CardReader card){
 		for (Account acc: accounts){
 			if (acc.getAccountNumber() == card.getAccountNumber()) return acc;
 		}
@@ -30,10 +30,26 @@ public class Bank {
 	//Returns accounts withdrawal
 	//Atm must first call validate on the account.
 	public int withdraw(Account acc, int val) {
-		return acc.withdraw(val);
+		int balance = acc.getBalance();
+		//If there is not enough money, print an error and don't actually change the account money
+		if( (balance-val) < 0) {
+			System.out.println("Cannot withdraw "+val+" from account.");
+			return -1;
+		}
+		acc.setBalance(balance-=val);
+		return acc.getBalance();
 	}
 	//Returns accounts deposit
 	public int deposit(Account acc, int val) {
-		return acc.deposit(val);
+		//adding money is always allowed
+		int balance = acc.getBalance();
+		acc.setBalance(balance+=val);
+		return acc.getBalance();
 	}
+	
+	//Returns current balance
+	public int checkBalance(Account acc){
+		return acc.getBalance();
+	}
+
 }

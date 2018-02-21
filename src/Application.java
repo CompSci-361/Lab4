@@ -16,7 +16,7 @@ public class Application {
     		//wait for card input (4 digits)
     		System.out.print("Enter your card (4 digits): ");
     		int cardNum = input.nextInt();
-    		Card card = new Card(cardNum);
+    		CardReader card = new CardReader(cardNum);
     		
     		try {
 	    		ATM.BankingSession session = (ATM.BankingSession) atm.start(card);    		
