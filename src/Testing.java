@@ -21,7 +21,7 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	Card card1 = new Card(1234);
+    	CardReader card1 = new CardReader(1234);
     	int pin = 6789;
     	
     	ATM.BankingSession session = atm.start(card1);
@@ -39,7 +39,7 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	Card card1 = new Card(1234);
+    	CardReader card1 = new CardReader(1234);
     	int pin = 6789;
     	
     	ATM.BankingSession session = atm.start(card1);
@@ -57,7 +57,7 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	Card card1 = new Card(6789);
+    	CardReader card1 = new CardReader(6789);
     	int pin = 0000;
     	
     	ATM.BankingSession session = atm.start(card1);
@@ -72,7 +72,7 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	Card card1 = new Card(6789);
+    	CardReader card1 = new CardReader(6789);
     	int pin = 4321;
     	
     	ATM.BankingSession session = atm.start(card1);
