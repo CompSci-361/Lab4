@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.*;
 
-public class Application {
+public class Driver {
 
 	public static void main(String[] args) throws Throwable {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
