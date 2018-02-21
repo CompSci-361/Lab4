@@ -37,14 +37,14 @@ public class Bank {
 			return -1;
 		}
 		acc.setBalance(balance-=val);
-		return balance-=val;
+		return acc.getBalance();
 	}
 	//Returns accounts deposit
 	public int deposit(Account acc, int val) {
 		//adding money is always allowed
 		int balance = acc.getBalance();
 		acc.setBalance(balance+=val);
-		return balance+=val;
+		return acc.getBalance();
 	}
 	
 	//Returns current balance
