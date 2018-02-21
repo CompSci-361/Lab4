@@ -3,13 +3,16 @@ import java.util.ArrayList;
 
 public class ATM {
 	private Bank bank;
+	private CardReader cardReader;
 	
 	public ATM(){
 		bank = new Bank();
+		cardReader = new CardReader();
 	}
 	
 	public ATM(ArrayList<Account> startingAccounts) {
 		bank = new Bank(startingAccounts);
+		cardReader = new CardReader();
 	}
 	
 	

@@ -1,16 +1,11 @@
 
 public class CardReader {
-	private int accountNumber;
-	
-	public CardReader(int accountNumber){
-		this.accountNumber = accountNumber;
-	}
-	
+	private Card enteredCard = null;
 	public CardReader(){
 		
 	}
 	
 	public int getAccountNumber(){
-		return this.accountNumber;
+		return enteredCard != null ? enteredCard.getAccountNumber() : -1;
 	}
 }
