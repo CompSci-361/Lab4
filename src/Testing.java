@@ -21,10 +21,10 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	CardReader card1 = new CardReader(1234);
+    	Card card1 = new Card(1234);
     	int pin = 6789;
     	
-    	ATM.BankingSession session = atm.start(card1);
+    	ATM.BankingSession session = atm.getCardReader().insertCard(card1);
     	
     	assertEquals(session.tryAuthenticate(pin), true);
     	assertEquals(session.getIsAuthenticated(), true);
@@ -39,10 +39,10 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	CardReader card1 = new CardReader(1234);
+    	Card card1 = new Card(1234);
     	int pin = 6789;
     	
-    	ATM.BankingSession session = atm.start(card1);
+    	ATM.BankingSession session = atm.getCardReader().insertCard(card1);
     	
     	assertEquals(session.tryAuthenticate(pin), true);
     	assertEquals(session.getIsAuthenticated(), true);
@@ -57,10 +57,10 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	CardReader card1 = new CardReader(6789);
+    	Card card1 = new Card(6789);
     	int pin = 0000;
     	
-    	ATM.BankingSession session = atm.start(card1);
+    	ATM.BankingSession session = atm.getCardReader().insertCard(card1);
     	
     	assertEquals(session.tryAuthenticate(pin), false);
     	assertEquals(session.getIsAuthenticated(), false);    	
@@ -72,17 +72,16 @@ public class Testing {
     	ArrayList<Account> initialAccounts = getInitialAccounts();
     	
     	ATM atm = new ATM(initialAccounts);
-    	CardReader card1 = new CardReader(6789);
+    	Card card1 = new Card(6789);
     	int pin = 4321;
     	
-    	ATM.BankingSession session = atm.start(card1);
+    	ATM.BankingSession session = atm.getCardReader().insertCard(card1);
     	
     	assertEquals(session.tryAuthenticate(pin), true);
     	assertEquals(session.getIsAuthenticated(), true);
     	assertEquals(session.getBalance(), 60);
     	assertEquals(session.withdraw(20), 40);
     	assertEquals(session.getBalance(), 40);	
-
     }
     
 }
