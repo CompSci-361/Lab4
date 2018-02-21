@@ -1,23 +1,39 @@
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class ATM {
 	private Bank bank;
 	private CardReader cardReader;
+	private CashDispenser cashDispenser = null;
+	private Printer printer = null;
 	private BankingSession currentSession = null;
 	
 	public ATM(){
 		bank = new Bank();
 		cardReader = new CardReader();
+		cashDispenser = new CashDispenser();
+		printer = new Printer();
 	}
 	
 	public ATM(ArrayList<Account> startingAccounts) {
 		bank = new Bank(startingAccounts);
 		cardReader = new CardReader();
+		cashDispenser = new CashDispenser();
+		printer = new Printer();
 	}
 	
 	public CardReader getCardReader() {
 		return cardReader;
+	}
+	
+	public CashDispenser getCashDispenser() {
+		return cashDispenser;
+	}
+	
+	public Printer getReceiptPrinter() {
+		return printer;
 	}
 	
 	private BankingSession onCardInserted(Card insertedCard) throws Throwable {
@@ -129,4 +145,27 @@ public class ATM {
 		}
 	}
 	
+	public class CashDispenser {
+		public void dispense(int amount) throws Exception {
+			if (amount < 1) {
+				//can't dispense less than a single dollar
+				throw new Exception("Unable to dispense cash. Amount must be at least one.");
+			}
+			
+			//cash dispensed
+			ATM.this.getReceiptPrinter().print("withdrawl", amount);
+		}
+	}
+	
+	public class Printer {
+		public String print(String transType, double amount){
+			 LocalDateTime time = LocalDateTime.now();
+			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+			 String formatDateTime = time.format(formatter);
+			 
+			return (formatDateTime + " " + transType + " $" + amount);
+		}
+
+	}
+
 }
