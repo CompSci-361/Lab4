@@ -1,19 +1,62 @@
 import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 public class ATM {
 	private Bank bank;
+	private CardReader cardReader;
+	private CashDispenser cashDispenser = null;
+	private Printer printer = null;
+	private BankingSession currentSession = null;
 	
 	public ATM(){
 		bank = new Bank();
+		cardReader = new CardReader();
+		cashDispenser = new CashDispenser();
+		printer = new Printer();
 	}
 	
 	public ATM(ArrayList<Account> startingAccounts) {
 		bank = new Bank(startingAccounts);
+		cardReader = new CardReader();
+		cashDispenser = new CashDispenser();
+		printer = new Printer();
 	}
 	
+	public CardReader getCardReader() {
+		return cardReader;
+	}
 	
-	public BankingSession start(CardReader card) throws Throwable{
+	public CashDispenser getCashDispenser() {
+		return cashDispenser;
+	}
+	
+	public Printer getReceiptPrinter() {
+		return printer;
+	}
+	
+	private void displayMessage(String message) {
+		System.out.println(message);
+	}
+	
+	private BankingSession onCardInserted(Card insertedCard) throws Throwable {
+		//this is fired by the card reader when the card is inserted.
+		currentSession = start(insertedCard);
+		return currentSession;
+	}
+	
+	private void onCardEjected(Card ejectedCard) {
+		//this is fired by the card reader when the card is ejected.
+		if (currentSession != null) {
+			if (currentSession.enteredCard == ejectedCard) {
+				currentSession.end();
+				//let the user know that the session as ended.
+			}
+		}
+	}
+	
+	private BankingSession start(Card card) throws Throwable{
 		//start is called when the user first walks up to the ATM and the session begins
 		
 		//validation below should be moved to banking session.
@@ -28,9 +71,9 @@ public class ATM {
 	
 	public class BankingSession {
 		private boolean isAuthenticated = false;
-		private CardReader enteredCard = null;
+		private Card enteredCard = null;
 		private Account enteredAccount = null;
-		BankingSession(CardReader card) throws Exception {
+		BankingSession(Card card) throws Exception {
 			enteredCard = card;
 			isAuthenticated = false;
 			
@@ -67,6 +110,19 @@ public class ATM {
 			if(!(getIsAuthenticated())) return -1;
 			return bank.checkBalance(enteredAccount);
 		}
+		
+		public void printBalance() {
+			if(!(getIsAuthenticated())) return;
+			
+			int balance = bank.checkBalance(enteredAccount);
+			//todo use format strings
+			ATM.this.displayMessage("Balance (" + enteredAccount.getAccountNumber() + "): $" + balance);
+		}
+		
+		public void display(String text) {
+			//this does nothing other than call display
+			ATM.this.displayMessage(text);
+		}
 
 		public void end() {
 			isAuthenticated = false;
@@ -74,4 +130,65 @@ public class ATM {
 			enteredAccount = null;
 		}		
 	}
+	
+	public class CardReader {
+		private Card enteredCard = null;
+		public CardReader(){
+		}
+		
+		public int getAccountNumber(){
+			return enteredCard != null ? enteredCard.getAccountNumber() : -1;
+		}
+		
+		public boolean isCardInserted() {
+			return enteredCard != null;
+		}
+		
+		public BankingSession insertCard(Card card) throws Throwable {
+			if (isCardInserted()) throw new Exception("There is already a card in the card reader.");
+			if (card == null) throw new Exception("Invalid card: null");
+			
+			//validate card here
+			
+			enteredCard = card;
+			return ATM.this.onCardInserted(card);
+		}
+		
+		public void ejectCard() {
+			if (isCardInserted()) {
+				ATM.this.onCardEjected(enteredCard);
+				enteredCard = null;
+			}
+		}
+	}
+	
+	public class CashDispenser {
+		public void dispense(int amount) throws Exception {
+			if (amount < 1) {
+				//can't dispense less than a single dollar
+				throw new Exception("Unable to dispense cash. Amount must be at least one.");
+			}
+			
+			//cash dispensed
+			ATM.this.getReceiptPrinter().printTransaction("withdrawl", amount);
+		}
+	}
+	
+	public class Printer {
+		private String formatTransaction(String transType, double amount){
+			 LocalDateTime time = LocalDateTime.now();
+			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+			 String formatDateTime = time.format(formatter);
+			 
+			return (formatDateTime + " " + transType + " $" + amount);
+		}
+		public void printTransaction(String transType, double amount) {
+			ATM.this.displayMessage(formatTransaction(transType, amount));
+		}
+		public void print(String text) {
+			//this does nothing other than call display since we can't actually print a reciept.
+			ATM.this.displayMessage(text);
+		}
+	}
+
 }

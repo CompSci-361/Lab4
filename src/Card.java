@@ -1,13 +1,9 @@
 
-public class CardReader {
+public class Card {
 	private int accountNumber;
 	
-	public CardReader(int accountNumber){
+	public Card(int accountNumber) {
 		this.accountNumber = accountNumber;
-	}
-	
-	public CardReader(){
-		
 	}
 	
 	public int getAccountNumber(){
