@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+
 import java.io.*;
 
 public class Simulator {
@@ -13,8 +14,8 @@ public class Simulator {
     	
     	System.out.println("ATM Simulator");
     	System.out.println("Read from file? [y,n]");
-    	String decision = input.next();
-    	if(decision=="y") {
+    	String decision = input.nextLine().trim();
+    	if(decision.equals("y")) {
     		// The name of the file to open.
             String fileName = "transactions.txt";
 
@@ -30,6 +31,9 @@ public class Simulator {
                 BufferedReader bufferedReader = 
                     new BufferedReader(fileReader);
                 
+                ATM.BankingSession session = null;
+                char prevCMD = ' ';
+                
                 while((line = bufferedReader.readLine()) != null) {
                     String delims = "[ ]+";
                     String[] tokens = line.split(delims);
@@ -37,14 +41,14 @@ public class Simulator {
 					String time = tokens[0];
                     String cmd = tokens[1];
                     String param = tokens[2];
-                    ATM.BankingSession session = null;
-                    char prevCMD = ' ';
+
                     //prevCMD can be 'r' for read, 'd' for deposit, 'w' for withdraw, 'b' for check balance
                     switch(cmd) {
                     	case "CARDREAD":{
                     		Card card = new Card(Integer.parseInt(param));
                     		session = (ATM.BankingSession) atm.getCardReader().insertCard(card);
                     		prevCMD='r';
+                    		break;
                     	}
                     	case "NUM":{
                     		//Don't want a null pointer exception
@@ -53,16 +57,24 @@ public class Simulator {
                     				if(session != null) {
                                 		session.tryAuthenticate(Integer.parseInt(param));
                             		}
+                    				break;
                     			}
                     			case 'w':{
-                    				session.withdraw(Integer.parseInt(param));
+                    				ATM.WithdrawingTransaction transaction = (ATM.WithdrawingTransaction) session.withdraw();
+                    				transaction.provideAmount(Integer.parseInt(param));
+                    				session.commitTransaction(transaction);
+                    				break;
                     			}
                     			case 'b':{
                     				//we need the atm to print
                     				session.printBalance();
+                    				break;
                     			}
                     			case 'd':{
-                    				session.deposit(Integer.parseInt(param));
+                    				ATM.DepositingTransaction transaction = (ATM.DepositingTransaction) session.deposit();
+                    				transaction.provideAmount(Integer.parseInt(param));
+                    				session.commitTransaction(transaction);
+                    				break;
                     			}
                     		}
                   
@@ -71,26 +83,35 @@ public class Simulator {
                     		switch(param) {
                     			case "D":{
                     				prevCMD='d';
+                    				break;
                     			}
                     			case "W":{
                     				prevCMD='w';
+                    				break;
                     			}
                     			case "CB":{
                     				prevCMD='b';
+                    				break;
                     			}
                     			case "CANCEL":{
                     				prevCMD=' ';
-                    				session.end();
+                    				//session.end();
+                    				atm.getCardReader().ejectCard();
                     				session = null;
+                    				
+                    				break;
                     			}
                     		}
+                    		break;
                     	}
                     	case "DIS":{
                     		//do we need an individual display component?
                     		session.display(param);
+                    		break;
                     	}
                     	case "PRINT":{
                     		atm.getReceiptPrinter().print(param);
+                    		break;
                     	}
                     }
                     
@@ -110,6 +131,9 @@ public class Simulator {
                     + fileName + "'");                  
                 // Or we could just do this: 
                 // ex.printStackTrace();
+            }
+            catch (Exception ex) {
+            	System.err.println(ex.toString());
             }
     		
     	}else {
@@ -136,7 +160,7 @@ public class Simulator {
 		    			System.out.print("Would you like to (W)ithdraw, make a (D)eposit or get a (B)alance inquiry?: ");
 		    			String cmd = input.next().toLowerCase();
 		    			
-		    			switch(cmd) {
+		    			/*switch(cmd) {
 			    			case "d": {			
 				    				System.out.print("How much would you like to deposit?: ");
 				    				int amount = input.nextInt();
@@ -174,7 +198,7 @@ public class Simulator {
 			    			default:
 			    				System.out.println("Invalid command. Try again.");
 			    				continue;
-		    			}
+		    			}*/
 	
 		    			//end of transaction
 		    			session.end();

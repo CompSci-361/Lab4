@@ -43,6 +43,7 @@ public class ATM {
 	private BankingSession onCardInserted(Card insertedCard) throws Throwable {
 		//this is fired by the card reader when the card is inserted.
 		currentSession = start(insertedCard);
+		System.out.println("Enter PIN");
 		return currentSession;
 	}
 	
@@ -52,8 +53,27 @@ public class ATM {
 			if (currentSession.enteredCard == ejectedCard) {
 				currentSession.end();
 				//let the user know that the session as ended.
+				System.out.println("EJECT CARD");
 			}
 		}
+	}
+	
+	private void onSessionTransactionBegan(Transaction transaction, BankingSession session, Account account) {
+		//this is fired when the user has began a transaction.
+		if (transaction instanceof WithdrawingTransaction || transaction instanceof DepositingTransaction) {
+			System.out.println("Amount?");
+		}
+		
+	}
+
+	private void onSessionAuthenticated(BankingSession session, Account enteredAccount) {
+		//this is fired when the session was authenticated
+		
+	}
+	
+	private void onSessionReadyForTransaction(BankingSession session, Account account) {
+		//this is fired when we're able to accept a command from the user.
+		System.out.println("Choose Transaction");
 	}
 	
 	private BankingSession start(Card card) throws Throwable{
@@ -86,14 +106,23 @@ public class ATM {
 			return isAuthenticated;
 		}
 		
-		public int withdraw(int val) {
-			if(!(getIsAuthenticated())) return -1;
-			return bank.withdraw(enteredAccount, val);
+		public Transaction withdraw() throws Throwable {
+			if(!(getIsAuthenticated())) throw new Exception("Not authenticated.");
+			return new WithdrawingTransaction(this, enteredAccount);
 		}
 		
-		public int deposit(int val) {
-			if(!(getIsAuthenticated())) return -1;
-			return bank.deposit(enteredAccount, val);
+		public Transaction deposit() throws Throwable {
+			if(!(getIsAuthenticated())) throw new Exception("Not authenticated.");
+			return new DepositingTransaction(this, enteredAccount);
+		}
+		
+		public int commitTransaction(Transaction transaction) throws Throwable {
+			if(!(getIsAuthenticated())) throw new Exception("Not authenticated.");
+			if (transaction == null) throw new Exception("Cannot perform a null transaction.");
+			
+			int result = transaction.executeTransaction();
+			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
+			return result;
 		}
 		
 		public boolean tryAuthenticate(int pinCode) {
@@ -101,8 +130,11 @@ public class ATM {
 			
 			Account temp = bank.getAccount(enteredCard);
 			isAuthenticated = bank.validate(temp, pinCode);
-			if(isAuthenticated) 
+			if(isAuthenticated) {
 				enteredAccount = temp;
+				ATM.this.onSessionAuthenticated(this, enteredAccount);
+				ATM.this.onSessionReadyForTransaction(this, enteredAccount);
+			}
 			return isAuthenticated;
 		}
 		
@@ -117,6 +149,7 @@ public class ATM {
 			int balance = bank.checkBalance(enteredAccount);
 			//todo use format strings
 			ATM.this.displayMessage("Balance (" + enteredAccount.getAccountNumber() + "): $" + balance);
+			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
 		}
 		
 		public void display(String text) {
@@ -190,5 +223,63 @@ public class ATM {
 			ATM.this.displayMessage(text);
 		}
 	}
+	
+	public abstract class Transaction {
+		protected double transactionAmount;
+		protected Account transactionAccount;
+		protected BankingSession transactionSession;
+		protected boolean executed = false;
+		public Transaction(BankingSession session, Account account) {
+			//todo null check
+			transactionSession = session;
+			transactionAccount = account;
+			
+			ATM.this.onSessionTransactionBegan(this, session, account);
+		}
+		
+		public void provideAmount(double amount) {
+			transactionAmount = amount;
+		}
+		
+		public void cancelTransaction() {
+			//pretend we executed it
+			executed = true;
+		}
+		
+		abstract int executeTransaction();
+	}
+	
+	public class WithdrawingTransaction extends Transaction {
 
+		public WithdrawingTransaction(BankingSession session, Account account) {
+			super(session, account);
+		}
+
+		@Override
+		int executeTransaction() {
+			if (executed) return -1;
+			int result = bank.withdraw(transactionAccount, (int)transactionAmount);
+			ATM.this.getReceiptPrinter().printTransaction("W", transactionAmount);
+			executed = true;
+			return result;
+		}
+		
+	}
+	
+	public class DepositingTransaction extends Transaction {
+
+		public DepositingTransaction(BankingSession session, Account account) {
+			super(session, account);
+		}
+
+		@Override
+		int executeTransaction() {
+			if (executed) return -1;
+			int result = bank.deposit(transactionAccount, (int)transactionAmount);
+			ATM.this.getReceiptPrinter().printTransaction("D", transactionAmount);
+			executed = true;
+			return result;
+		}
+		
+	}
 }
