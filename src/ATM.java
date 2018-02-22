@@ -53,6 +53,7 @@ public class ATM {
 			if (currentSession.enteredCard == ejectedCard) {
 				currentSession.end();
 				//let the user know that the session as ended.
+				System.out.println("EJECT CARD");
 			}
 		}
 	}
@@ -258,6 +259,7 @@ public class ATM {
 		int executeTransaction() {
 			if (executed) return -1;
 			int result = bank.withdraw(transactionAccount, (int)transactionAmount);
+			ATM.this.getReceiptPrinter().printTransaction("W", transactionAmount);
 			executed = true;
 			return result;
 		}
@@ -274,6 +276,7 @@ public class ATM {
 		int executeTransaction() {
 			if (executed) return -1;
 			int result = bank.deposit(transactionAccount, (int)transactionAmount);
+			ATM.this.getReceiptPrinter().printTransaction("D", transactionAmount);
 			executed = true;
 			return result;
 		}
