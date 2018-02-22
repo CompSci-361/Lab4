@@ -259,7 +259,8 @@ public class ATM {
 		int executeTransaction() {
 			if (executed) return -1;
 			int result = bank.withdraw(transactionAccount, (int)transactionAmount);
-			ATM.this.getReceiptPrinter().printTransaction("W", transactionAmount);
+			if(result != -1)
+				ATM.this.getReceiptPrinter().printTransaction("W", transactionAmount);
 			executed = true;
 			return result;
 		}
