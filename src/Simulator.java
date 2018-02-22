@@ -13,8 +13,8 @@ public class Simulator {
     	
     	System.out.println("ATM Simulator");
     	System.out.println("Read from file? [y,n]");
-    	String decision = input.next();
-    	if(decision=="y") {
+    	String decision = input.nextLine().trim();
+    	if(decision.equals("y")) {
     		// The name of the file to open.
             String fileName = "transactions.txt";
 
@@ -30,6 +30,8 @@ public class Simulator {
                 BufferedReader bufferedReader = 
                     new BufferedReader(fileReader);
                 
+                ATM.BankingSession session = null;
+                
                 while((line = bufferedReader.readLine()) != null) {
                     String delims = "[ ]+";
                     String[] tokens = line.split(delims);
@@ -37,7 +39,7 @@ public class Simulator {
 					String time = tokens[0];
                     String cmd = tokens[1];
                     String param = tokens[2];
-                    ATM.BankingSession session = null;
+
                     char prevCMD = ' ';
                     //prevCMD can be 'r' for read, 'd' for deposit, 'w' for withdraw, 'b' for check balance
                     switch(cmd) {
