@@ -43,6 +43,7 @@ public class ATM {
 	private BankingSession onCardInserted(Card insertedCard) throws Throwable {
 		//this is fired by the card reader when the card is inserted.
 		currentSession = start(insertedCard);
+		System.out.println("Enter PIN");
 		return currentSession;
 	}
 	
@@ -54,6 +55,16 @@ public class ATM {
 				//let the user know that the session as ended.
 			}
 		}
+	}	
+
+	private void onSessionAuthenticated(BankingSession session, Account enteredAccount) {
+		//this is fired when the session was authenticated
+		
+	}
+	
+	private void onSessionReadyForTransaction(BankingSession session, Account account) {
+		//this is fired when we're able to accept a command from the user.
+		System.out.println("Choose Transaction");
 	}
 	
 	private BankingSession start(Card card) throws Throwable{
@@ -88,12 +99,16 @@ public class ATM {
 		
 		public int withdraw(int val) {
 			if(!(getIsAuthenticated())) return -1;
-			return bank.withdraw(enteredAccount, val);
+			int result = bank.withdraw(enteredAccount, val);
+			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
+			return result;
 		}
 		
 		public int deposit(int val) {
 			if(!(getIsAuthenticated())) return -1;
-			return bank.deposit(enteredAccount, val);
+			int result = bank.deposit(enteredAccount, val);
+			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
+			return result;
 		}
 		
 		public boolean tryAuthenticate(int pinCode) {
@@ -101,8 +116,11 @@ public class ATM {
 			
 			Account temp = bank.getAccount(enteredCard);
 			isAuthenticated = bank.validate(temp, pinCode);
-			if(isAuthenticated) 
+			if(isAuthenticated) {
 				enteredAccount = temp;
+				ATM.this.onSessionAuthenticated(this, enteredAccount);
+				ATM.this.onSessionReadyForTransaction(this, enteredAccount);
+			}
 			return isAuthenticated;
 		}
 		
@@ -117,6 +135,7 @@ public class ATM {
 			int balance = bank.checkBalance(enteredAccount);
 			//todo use format strings
 			ATM.this.displayMessage("Balance (" + enteredAccount.getAccountNumber() + "): $" + balance);
+			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
 		}
 		
 		public void display(String text) {
@@ -190,5 +209,4 @@ public class ATM {
 			ATM.this.displayMessage(text);
 		}
 	}
-
 }
