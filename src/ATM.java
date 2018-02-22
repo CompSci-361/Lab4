@@ -116,11 +116,11 @@ public class ATM {
 			return new DepositingTransaction(this, enteredAccount);
 		}
 		
-		public int commitTransaction(Transaction transaction) throws Throwable {
+		public Object commitTransaction(Transaction transaction) throws Throwable {
 			if(!(getIsAuthenticated())) throw new Exception("Not authenticated.");
 			if (transaction == null) throw new Exception("Cannot perform a null transaction.");
 			
-			int result = transaction.executeTransaction();
+			Object result = transaction.executeTransaction();
 			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
 			return result;
 		}
@@ -138,7 +138,7 @@ public class ATM {
 			return isAuthenticated;
 		}
 		
-		public int getBalance() {
+		public double getBalance() {
 			if(!(getIsAuthenticated())) return -1;
 			return bank.checkBalance(enteredAccount);
 		}
@@ -146,7 +146,7 @@ public class ATM {
 		public void printBalance() {
 			if(!(getIsAuthenticated())) return;
 			
-			int balance = bank.checkBalance(enteredAccount);
+			double balance = bank.checkBalance(enteredAccount);
 			//todo use format strings
 			ATM.this.displayMessage("Balance (" + enteredAccount.getAccountNumber() + "): $" + balance);
 			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
@@ -246,7 +246,7 @@ public class ATM {
 			executed = true;
 		}
 		
-		abstract int executeTransaction();
+		abstract Object executeTransaction();
 	}
 	
 	public class WithdrawingTransaction extends Transaction {
@@ -256,9 +256,9 @@ public class ATM {
 		}
 
 		@Override
-		int executeTransaction() {
+		Object executeTransaction() {
 			if (executed) return -1;
-			int result = bank.withdraw(transactionAccount, (int)transactionAmount);
+			double result = bank.withdraw(transactionAccount, (int)transactionAmount);
 			if(result != -1)
 				ATM.this.getReceiptPrinter().printTransaction("W", transactionAmount);
 			executed = true;
@@ -274,9 +274,9 @@ public class ATM {
 		}
 
 		@Override
-		int executeTransaction() {
+		Object executeTransaction() {
 			if (executed) return -1;
-			int result = bank.deposit(transactionAccount, (int)transactionAmount);
+			double result = bank.deposit(transactionAccount, (int)transactionAmount);
 			ATM.this.getReceiptPrinter().printTransaction("D", transactionAmount);
 			executed = true;
 			return result;

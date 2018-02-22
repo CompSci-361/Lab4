@@ -29,8 +29,8 @@ public class Bank {
 	//Will return -1 if there is not enough money, and will print an error message
 	//Returns accounts withdrawal
 	//Atm must first call validate on the account.
-	public int withdraw(Account acc, int val) {
-		int balance = acc.getBalance();
+	public double withdraw(Account acc, double val) {
+		double balance = acc.getBalance();
 		//If there is not enough money, print an error and don't actually change the account money
 		if( (balance-val) < 0) {
 			System.out.println("Cannot withdraw "+val+" from account.");
@@ -40,15 +40,15 @@ public class Bank {
 		return acc.getBalance();
 	}
 	//Returns accounts deposit
-	public int deposit(Account acc, int val) {
+	public double deposit(Account acc, int val) {
 		//adding money is always allowed
-		int balance = acc.getBalance();
+		double balance = acc.getBalance();
 		acc.setBalance(balance+=val);
 		return acc.getBalance();
 	}
 	
 	//Returns current balance
-	public int checkBalance(Account acc){
+	public double checkBalance(Account acc){
 		return acc.getBalance();
 	}
 

@@ -2,8 +2,8 @@
 public class Account {
 	private int accountNumber;
 	private int PINcode;
-	private int balance;
-	public Account(int acc, int pin, int bal) {
+	private double balance;
+	public Account(int acc, int pin, double bal) {
 		accountNumber = acc;
 		PINcode = pin;
 		balance = bal;
@@ -14,14 +14,14 @@ public class Account {
 	public int getAccountPIN() {
 		return PINcode;
 	}
-	public int getBalance() {
+	public double getBalance() {
 		return balance;
 	}
-	public void setBalance(int balance){
+	public void setBalance(double balance) {
 		this.balance = balance;
 	}
 	
-	public boolean validate(int pin){
+	public boolean validate(double pin) {
 		return pin == PINcode;
 	}
 	
