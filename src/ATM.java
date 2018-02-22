@@ -36,6 +36,10 @@ public class ATM {
 		return printer;
 	}
 	
+	private void displayMessage(String message) {
+		System.out.println(message);
+	}
+	
 	private BankingSession onCardInserted(Card insertedCard) throws Throwable {
 		//this is fired by the card reader when the card is inserted.
 		currentSession = start(insertedCard);
@@ -106,6 +110,19 @@ public class ATM {
 			if(!(getIsAuthenticated())) return -1;
 			return bank.checkBalance(enteredAccount);
 		}
+		
+		public void printBalance() {
+			if(!(getIsAuthenticated())) return;
+			
+			int balance = bank.checkBalance(enteredAccount);
+			//todo use format strings
+			ATM.this.displayMessage("Balance (" + enteredAccount.getAccountNumber() + "): $" + balance);
+		}
+		
+		public void display(String text) {
+			//this does nothing other than call display
+			ATM.this.displayMessage(text);
+		}
 
 		public void end() {
 			isAuthenticated = false;
@@ -153,19 +170,25 @@ public class ATM {
 			}
 			
 			//cash dispensed
-			ATM.this.getReceiptPrinter().print("withdrawl", amount);
+			ATM.this.getReceiptPrinter().printTransaction("withdrawl", amount);
 		}
 	}
 	
 	public class Printer {
-		public String print(String transType, double amount){
+		private String formatTransaction(String transType, double amount){
 			 LocalDateTime time = LocalDateTime.now();
 			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 			 String formatDateTime = time.format(formatter);
 			 
 			return (formatDateTime + " " + transType + " $" + amount);
 		}
-
+		public void printTransaction(String transType, double amount) {
+			ATM.this.displayMessage(formatTransaction(transType, amount));
+		}
+		public void print(String text) {
+			//this does nothing other than call display since we can't actually print a reciept.
+			ATM.this.displayMessage(text);
+		}
 	}
 
 }

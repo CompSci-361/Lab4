@@ -33,7 +33,8 @@ public class Simulator {
                 while((line = bufferedReader.readLine()) != null) {
                     String delims = "[ ]+";
                     String[] tokens = line.split(delims);
-                    String time = tokens[0];
+                    @SuppressWarnings("unused")
+					String time = tokens[0];
                     String cmd = tokens[1];
                     String param = tokens[2];
                     ATM.BankingSession session = null;
@@ -85,10 +86,11 @@ public class Simulator {
                     		}
                     	}
                     	case "DIS":{
+                    		//do we need an individual display component?
                     		session.display(param);
                     	}
                     	case "PRINT":{
-                    		session.printString(param);
+                    		atm.getReceiptPrinter().print(param);
                     	}
                     }
                     
@@ -186,6 +188,8 @@ public class Simulator {
 	    		}
 	    	}
     	}
+    	
+    	input.close();
 	}
 
 	
