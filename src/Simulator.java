@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+
 import java.io.*;
 
 public class Simulator {
@@ -59,7 +60,9 @@ public class Simulator {
                     				break;
                     			}
                     			case 'w':{
-                    				session.withdraw(Integer.parseInt(param));
+                    				ATM.WithdrawingTransaction transaction = (ATM.WithdrawingTransaction) session.withdraw();
+                    				transaction.provideAmount(Integer.parseInt(param));
+                    				session.commitTransaction(transaction);
                     				break;
                     			}
                     			case 'b':{
@@ -68,7 +71,9 @@ public class Simulator {
                     				break;
                     			}
                     			case 'd':{
-                    				session.deposit(Integer.parseInt(param));
+                    				ATM.DepositingTransaction transaction = (ATM.DepositingTransaction) session.deposit();
+                    				transaction.provideAmount(Integer.parseInt(param));
+                    				session.commitTransaction(transaction);
                     				break;
                     			}
                     		}
@@ -155,7 +160,7 @@ public class Simulator {
 		    			System.out.print("Would you like to (W)ithdraw, make a (D)eposit or get a (B)alance inquiry?: ");
 		    			String cmd = input.next().toLowerCase();
 		    			
-		    			switch(cmd) {
+		    			/*switch(cmd) {
 			    			case "d": {			
 				    				System.out.print("How much would you like to deposit?: ");
 				    				int amount = input.nextInt();
@@ -193,7 +198,7 @@ public class Simulator {
 			    			default:
 			    				System.out.println("Invalid command. Try again.");
 			    				continue;
-		    			}
+		    			}*/
 	
 		    			//end of transaction
 		    			session.end();

@@ -55,7 +55,15 @@ public class ATM {
 				//let the user know that the session as ended.
 			}
 		}
-	}	
+	}
+	
+	private void onSessionTransactionBegan(Transaction transaction, BankingSession session, Account account) {
+		//this is fired when the user has began a transaction.
+		if (transaction instanceof WithdrawingTransaction || transaction instanceof DepositingTransaction) {
+			System.out.println("Amount?");
+		}
+		
+	}
 
 	private void onSessionAuthenticated(BankingSession session, Account enteredAccount) {
 		//this is fired when the session was authenticated
@@ -97,16 +105,21 @@ public class ATM {
 			return isAuthenticated;
 		}
 		
-		public int withdraw(int val) {
-			if(!(getIsAuthenticated())) return -1;
-			int result = bank.withdraw(enteredAccount, val);
-			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
-			return result;
+		public Transaction withdraw() throws Throwable {
+			if(!(getIsAuthenticated())) throw new Exception("Not authenticated.");
+			return new WithdrawingTransaction(this, enteredAccount);
 		}
 		
-		public int deposit(int val) {
-			if(!(getIsAuthenticated())) return -1;
-			int result = bank.deposit(enteredAccount, val);
+		public Transaction deposit() throws Throwable {
+			if(!(getIsAuthenticated())) throw new Exception("Not authenticated.");
+			return new DepositingTransaction(this, enteredAccount);
+		}
+		
+		public int commitTransaction(Transaction transaction) throws Throwable {
+			if(!(getIsAuthenticated())) throw new Exception("Not authenticated.");
+			if (transaction == null) throw new Exception("Cannot perform a null transaction.");
+			
+			int result = transaction.executeTransaction();
 			ATM.this.onSessionReadyForTransaction(this, enteredAccount);
 			return result;
 		}
@@ -208,5 +221,62 @@ public class ATM {
 			//this does nothing other than call display since we can't actually print a reciept.
 			ATM.this.displayMessage(text);
 		}
+	}
+	
+	public abstract class Transaction {
+		protected double transactionAmount;
+		protected Account transactionAccount;
+		protected BankingSession transactionSession;
+		protected boolean executed = false;
+		public Transaction(BankingSession session, Account account) {
+			//todo null check
+			transactionSession = session;
+			transactionAccount = account;
+			
+			ATM.this.onSessionTransactionBegan(this, session, account);
+		}
+		
+		public void provideAmount(double amount) {
+			transactionAmount = amount;
+		}
+		
+		public void cancelTransaction() {
+			//pretend we executed it
+			executed = true;
+		}
+		
+		abstract int executeTransaction();
+	}
+	
+	public class WithdrawingTransaction extends Transaction {
+
+		public WithdrawingTransaction(BankingSession session, Account account) {
+			super(session, account);
+		}
+
+		@Override
+		int executeTransaction() {
+			if (executed) return -1;
+			int result = bank.withdraw(transactionAccount, (int)transactionAmount);
+			executed = true;
+			return result;
+		}
+		
+	}
+	
+	public class DepositingTransaction extends Transaction {
+
+		public DepositingTransaction(BankingSession session, Account account) {
+			super(session, account);
+		}
+
+		@Override
+		int executeTransaction() {
+			if (executed) return -1;
+			int result = bank.deposit(transactionAccount, (int)transactionAmount);
+			executed = true;
+			return result;
+		}
+		
 	}
 }
