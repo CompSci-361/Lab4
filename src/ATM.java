@@ -203,7 +203,7 @@ public class ATM {
 			}
 			
 			//cash dispensed
-			ATM.this.getReceiptPrinter().printTransaction("withdrawl", amount);
+			ATM.this.getReceiptPrinter().printTransaction("W", amount);
 		}
 	}
 	
@@ -246,7 +246,7 @@ public class ATM {
 			executed = true;
 		}
 		
-		abstract Object executeTransaction();
+		abstract Object executeTransaction() throws Throwable;
 	}
 	
 	public class WithdrawingTransaction extends Transaction {
@@ -256,11 +256,14 @@ public class ATM {
 		}
 
 		@Override
-		Object executeTransaction() {
+		Object executeTransaction() throws Throwable {
 			if (executed) return -1;
-			double result = bank.withdraw(transactionAccount, (int)transactionAmount);
-			if(result != -1)
-				ATM.this.getReceiptPrinter().printTransaction("W", transactionAmount);
+			double result = bank.withdraw(transactionAccount, transactionAmount);
+			if(result != -1) {
+				//ATM.this.getReceiptPrinter().printTransaction("W", transactionAmount);
+				//cast to int. we can't dispense a decimal
+				ATM.this.getCashDispenser().dispense((int)transactionAmount);
+			}
 			executed = true;
 			return result;
 		}

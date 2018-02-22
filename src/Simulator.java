@@ -78,7 +78,7 @@ public class Simulator {
                     				break;
                     			}
                     		}
-                  
+                    		break;
                     	}
                     	case "BUTTON":{
                     		switch(param) {
