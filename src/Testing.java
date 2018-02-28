@@ -28,11 +28,11 @@ public class Testing {
     	
     	assertEquals(session.tryAuthenticate(pin), true);
     	assertEquals(session.getIsAuthenticated(), true);
-    	assertEquals(session.getBalance(), 80);
+    	assertEquals(session.getBalance(), 80.0, 0);
     	ATM.WithdrawingTransaction transaction = (ATM.WithdrawingTransaction) session.withdraw();
     	transaction.provideAmount(20);
-    	assertEquals(session.commitTransaction(transaction), 60);
-    	assertEquals(session.getBalance(), 60);	
+    	assertEquals(session.commitTransaction(transaction), 60.0);
+    	assertEquals(session.getBalance(), 60.0, 0);	
 
     }
     
@@ -48,11 +48,11 @@ public class Testing {
     	
     	assertEquals(session.tryAuthenticate(pin), true);
     	assertEquals(session.getIsAuthenticated(), true);
-    	assertEquals(session.getBalance(), 80);
+    	assertEquals(session.getBalance(), 80.0, 0);
     	ATM.WithdrawingTransaction transaction = (ATM.WithdrawingTransaction) session.withdraw();
     	transaction.provideAmount(80);
-    	assertEquals(session.commitTransaction(transaction), 0);
-    	assertEquals(session.getBalance(), 0);
+    	assertEquals(session.commitTransaction(transaction), 0.0);
+    	assertEquals(session.getBalance(), 0.0, 0);
  
     }
     
@@ -83,11 +83,11 @@ public class Testing {
     	
     	assertEquals(session.tryAuthenticate(pin), true);
     	assertEquals(session.getIsAuthenticated(), true);
-    	assertEquals(session.getBalance(), 60);
+    	assertEquals(session.getBalance(), 60.0, 0);
     	ATM.WithdrawingTransaction transaction = (ATM.WithdrawingTransaction) session.withdraw();
     	transaction.provideAmount(20);
-    	assertEquals(session.commitTransaction(transaction), 40);
-    	assertEquals(session.getBalance(), 40);	
+    	assertEquals(session.commitTransaction(transaction), 40.0);
+    	assertEquals(session.getBalance(), 40.0, 0);	
     }
     
 }
