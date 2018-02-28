@@ -43,4 +43,9 @@ public class Account {
 		Account comp = (Account)obj;
 		return comp.getAccountNumber() == this.accountNumber && comp.getAccountPIN() == this.PINcode;
 	}
+	
+	@Override
+	public String toString() {
+		return "Account<[Account Num: " + getAccountNumber() + " | Balance: $" + getBalance() + " | Pin: " + getAccountPIN() + "]>";
+	}
 }
